@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="wrap">
+    <div class="qr-frame">
+      <canvas id="qrCanvas" width="320" height="320"></canvas>
+    </div>
+
+    <textarea
+      class="url-input"
+      id="urlInput"
+      rows="2"
+      spellcheck="false"
+      autocomplete="off"
+      placeholder="Enter a URL"></textarea>
+
+    <button class="size-btn" id="sizeBtn" type="button">
+      <span class="size-label">Download size</span>
+      <span class="size-value" id="sizeValue">512 px</span>
+    </button>
+
+    <div class="logo-picker" role="group" aria-label="Logo">
+      <button class="logo-opt is-active" data-logo="none" type="button">None</button>
+      <button class="logo-opt" data-logo="logo1" type="button">Logo 1</button>
+      <button class="logo-opt" data-logo="logo2" type="button">Logo 2</button>
+    </div>
+
+    <button class="btn btn-primary btn-download" id="downloadBtn" type="button">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download
+    </button>
+  </main>
+
+  <script src="qrcode.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

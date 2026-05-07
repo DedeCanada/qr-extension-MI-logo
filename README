@@ -1,0 +1,98 @@
+# QR Code with the Memory and Imagination Lab Logo
+
+A free browser extension that turns the page you're on (or any link you paste) into a QR code with the Memory and Imagination logo in the middle. Pick a size, hit download, done.
+
+Everything happens on your computer, the link never leaves your computer.
+
+![The extension popup showing a QR code with the MI logo in the center](docs/images/01-popup.png)
+
+## Installing the extension
+
+### 1. Download the code
+
+On this GitHub page, click the green **Code** button near the top, then choose **Download ZIP** at the bottom of the menu that appears.
+
+![The green Code button on GitHub with Download ZIP highlighted](docs/images/02-github-download.png)
+
+A file called something like `qr-extension-MI.zip` will land in your Downloads folder.
+
+### 2. Unzip it
+
+Find the ZIP file you just downloaded and unzip it:
+
+- **On Windows:** right-click the file → **Extract All** → click **Extract**
+- **On Mac:** double-click the file (it unzips on its own)
+
+You'll end up with a regular folder. Inside it you should see files like `manifest.json`, `popup.html`, `logo1.png`, etc.
+
+![The unzipped folder showing the extension's files](docs/images/03-unzipped-folder.png)
+
+> **Important:** Put this folder somewhere you'll keep it for the long run — Documents, Desktop, anywhere stable. If you ever move or delete this folder, the extension will stop working. *It does not get saved on the browser.*
+
+### 3. Open your browser's Extensions page
+
+Copy one of these into your browser's address bar and press Enter:
+
+| Browser | Address |
+|---|---|
+| Chrome | `chrome://extensions` |
+| Edge | `edge://extensions` |
+| Brave | `brave://extensions` |
+
+![The browser's Extensions page](docs/images/04-extensions-page.png)
+
+### 4. Turn on Developer mode
+
+Look in the top-right corner of the Extensions page for a small toggle labeled **Developer mode**. Flip it on.
+
+![The Developer mode toggle in the corner of the Extensions page](docs/images/05-developer-mode.png)
+
+After flipping it, three new buttons appear above your extensions list. We need the leftmost one.
+
+### 5. Load the extension
+
+Click **Load unpacked**. A file picker will open.
+
+Navigate to the folder you unzipped in step 2, **select it** (don't open it), and click **Select Folder** (Windows) or **Open** (Mac).
+
+![Selecting the right folder in the file picker](docs/images/06-load-unpacked.png)
+
+If everything went right, you'll see the extension show up in your list:
+
+![The installed extension on the extensions page](docs/images/07-installed.png)
+
+### 6. Pin it to your toolbar
+
+To make the extension easy to reach, pin its icon to the top of your browser:
+
+1. Click the **puzzle-piece icon** in the top-right of your browser (the Extensions menu)
+2. Find **QR Code with MI Logo** in the list
+3. Click the **pin icon** next to its name
+
+![Pinning the extension](docs/images/08-pin-extension.png)
+
+You should now see the QR icon sitting in your toolbar, ready to use.
+
+---
+
+## Using it
+
+Open any webpage and click the QR icon in your toolbar.
+
+Here's what each piece does:
+
+- **QR preview** — updates the moment you change anything below.
+- **URL box** — auto-fills with the page you're currently on. **You can edit it** to make a QR for any link without actually opening that link first.
+- **Download size** — click to cycle through 512 → 1024 → 2048 → 4096 pixels. The bigger the size, the sharper the QR if you're printing it.
+- **Logo picker** — *None*, *Logo 1* (full M&I lockup), or *Logo 2* (circular badge). Your choice is remembered the next time you open the popup.
+- **Download** — saves the QR as a PNG to your Downloads folder, named after the website (for example `qr-google.com-1024.png`).
+
+That's the whole thing. Scan the resulting QR code with your phone camera to test.
+
+---
+
+## Credits
+
+Built by [DedeCanada](https://github.com/DedeCanada). QR code generation uses the open-source [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) library by Kazuhiko Arase.
+
+Released under the MIT license.

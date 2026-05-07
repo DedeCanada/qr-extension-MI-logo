@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "QR Code with MI Logo",
+  "version": "1.0.0",
+  "description": "Generate a QR code of the current page with the Memory and Imagination logo in the center.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "QR Code with MI Logo",
+    "default_icon": "icon.png"
+  },
+  "permissions": ["activeTab", "storage"],
+  "icons": {
+    "128": "icon.png"
+  }
+}
