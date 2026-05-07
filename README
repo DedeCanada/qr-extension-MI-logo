@@ -14,7 +14,7 @@ On this GitHub page, click the green **Code** button near the top, then choose *
 
 ![The green Code button on GitHub with Download ZIP highlighted](docs/images/02-github-download.png)
 
-A file called something like `qr-extension-MI.zip` will land in your Downloads folder.
+A file called something like `qr-extension-MI-logo-main.zip` will land in your Downloads folder.
 
 ### 2. Unzip it
 
@@ -39,13 +39,11 @@ Copy one of these into your browser's address bar and press Enter:
 | Edge | `edge://extensions` |
 | Brave | `brave://extensions` |
 
-![The browser's Extensions page](docs/images/04-extensions-page.png)
-
 ### 4. Turn on Developer mode
 
 Look in the top-right corner of the Extensions page for a small toggle labeled **Developer mode**. Flip it on.
 
-![The Developer mode toggle in the corner of the Extensions page](docs/images/05-developer-mode.png)
+![The Developer mode toggle in the corner of the Extensions page](docs/images/04-developer-mode.png)
 
 After flipping it, three new buttons appear above your extensions list. We need the leftmost one.
 
@@ -55,11 +53,13 @@ Click **Load unpacked**. A file picker will open.
 
 Navigate to the folder you unzipped in step 2, **select it** (don't open it), and click **Select Folder** (Windows) or **Open** (Mac).
 
-![Selecting the right folder in the file picker](docs/images/06-load-unpacked.png)
+![Selecting the right folder in the file picker](docs/images/05-load-unpacked.png)
+
+> **Important:** Make sure that you select the folder that has `docs/` inside of it, but do not select `docs/`.
 
 If everything went right, you'll see the extension show up in your list:
 
-![The installed extension on the extensions page](docs/images/07-installed.png)
+![The installed extension on the extensions page](docs/images/06-installed.png)
 
 ### 6. Pin it to your toolbar
 
@@ -69,7 +69,7 @@ To make the extension easy to reach, pin its icon to the top of your browser:
 2. Find **QR Code with MI Logo** in the list
 3. Click the **pin icon** next to its name
 
-![Pinning the extension](docs/images/08-pin-extension.png)
+![Pinning the extension](docs/images/07-pin-extension.png)
 
 You should now see the QR icon sitting in your toolbar, ready to use.
 
