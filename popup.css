@@ -19,6 +19,8 @@ html, body {
   color: var(--ink);
   font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
   width: 360px;
+  min-height: min-content;
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -186,6 +188,166 @@ html, body {
 
 .logo-opt:active {
   transform: translateY(1px);
+}
+
+.settings-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 12px;
+  margin-top: 8px;
+  background: transparent;
+  border: 1px dashed var(--line);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: border-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.settings-toggle:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.settings-toggle:active {
+  transform: translateY(1px);
+}
+
+.settings-chevron {
+  transition: transform 0.2s ease;
+}
+
+.settings-toggle.is-open .settings-chevron {
+  transform: rotate(180deg);
+}
+
+.settings-panel {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.settings-panel.is-open {
+  display: block;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.setting-row + .setting-row {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+
+.setting-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.color-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.color-text {
+  width: 68px;
+  padding: 4px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 500;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.15s ease;
+}
+
+.color-text:focus {
+  border-color: var(--accent);
+}
+
+.color-text:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.color-btn {
+  width: 24px;
+  height: 24px;
+  padding: 3px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.color-btn:hover {
+  border-color: var(--accent);
+}
+
+.color-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.color-swatch {
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  background: #1a1814;
+}
+
+.color-wheel-hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.transparent-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.transparent-toggle input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.transparent-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
 }
 
 .btn {

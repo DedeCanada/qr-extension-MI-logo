@@ -13,6 +13,18 @@ const downloadBtn = document.getElementById('downloadBtn');
 const sizeBtn = document.getElementById('sizeBtn');
 const sizeValueEl = document.getElementById('sizeValue');
 const logoOpts = document.querySelectorAll('.logo-opt');
+const settingsToggle = document.getElementById('settingsToggle');
+const settingsPanel = document.getElementById('settingsPanel');
+const settingsChevron = document.getElementById('settingsChevron');
+const fgColorText = document.getElementById('fgColorText');
+const fgColorBtn = document.getElementById('fgColorBtn');
+const fgColorSwatch = document.getElementById('fgColorSwatch');
+const fgColorWheel = document.getElementById('fgColorWheel');
+const bgColorText = document.getElementById('bgColorText');
+const bgColorBtn = document.getElementById('bgColorBtn');
+const bgColorSwatch = document.getElementById('bgColorSwatch');
+const bgColorWheel = document.getElementById('bgColorWheel');
+const bgTransparent = document.getElementById('bgTransparent');
 
 const QR_SIZE = 600;          // internal pixel size for the on-screen canvas
 const DISPLAY_SIZE = 300;     // CSS display size
@@ -20,6 +32,9 @@ const LOGO_RATIO = 0.25;      // outer (border + image) target — snapped to mo
 const BORDER_MODULES = 1;     // thickness of the white border, in QR modules
 const SELECTED_LOGO_KEY = 'selectedLogo';
 const DOWNLOAD_SIZE_KEY = 'downloadSize';
+const FG_COLOR_KEY = 'qrFgColor';
+const BG_COLOR_KEY = 'qrBgColor';
+const BG_TRANSPARENT_KEY = 'qrBgTransparent';
 const DOWNLOAD_SIZES = [512, 1024, 2048, 4096];
 
 // Built-in logo choices. Files are bundled in the extension folder.
@@ -33,6 +48,9 @@ let currentUrl = '';
 let selectedLogo = 'none';
 let logoImageCache = {};      // key -> HTMLImageElement
 let downloadSize = DOWNLOAD_SIZES[0];
+let fgColor = '#1a1814';
+let bgColor = '#ffffff';
+let bgIsTransparent = false;
 let renderTimer = null;
 
 canvas.width = QR_SIZE;
@@ -91,6 +109,41 @@ async function saveDownloadSize(size) {
   try { await chrome.storage.local.set({ [DOWNLOAD_SIZE_KEY]: size }); } catch {}
 }
 
+async function saveFgColor(color) {
+  try { await chrome.storage.local.set({ [FG_COLOR_KEY]: color }); } catch {}
+}
+
+async function loadSavedFgColor() {
+  try {
+    const result = await chrome.storage.local.get(FG_COLOR_KEY);
+    const saved = result[FG_COLOR_KEY];
+    return /^#[0-9a-fA-F]{6}$/.test(saved) ? saved : '#1a1814';
+  } catch { return '#1a1814'; }
+}
+
+async function saveBgColor(color) {
+  try { await chrome.storage.local.set({ [BG_COLOR_KEY]: color }); } catch {}
+}
+
+async function loadSavedBgColor() {
+  try {
+    const result = await chrome.storage.local.get(BG_COLOR_KEY);
+    const saved = result[BG_COLOR_KEY];
+    return /^#[0-9a-fA-F]{6}$/.test(saved) ? saved : '#ffffff';
+  } catch { return '#ffffff'; }
+}
+
+async function saveBgTransparent(val) {
+  try { await chrome.storage.local.set({ [BG_TRANSPARENT_KEY]: val }); } catch {}
+}
+
+async function loadSavedBgTransparent() {
+  try {
+    const result = await chrome.storage.local.get(BG_TRANSPARENT_KEY);
+    return result[BG_TRANSPARENT_KEY] === true;
+  } catch { return false; }
+}
+
 async function loadSavedDownloadSize() {
   try {
     const result = await chrome.storage.local.get(DOWNLOAD_SIZE_KEY);
@@ -108,8 +161,11 @@ function renderQR(targetCanvas, text, logoImage) {
 
   // Empty input → just draw a blank white card so the popup doesn't look broken
   if (!text) {
-    targetCtx.fillStyle = '#ffffff';
-    targetCtx.fillRect(0, 0, size, size);
+    targetCtx.clearRect(0, 0, size, size);
+    if (!bgIsTransparent) {
+      targetCtx.fillStyle = bgColor;
+      targetCtx.fillRect(0, 0, size, size);
+    }
     return;
   }
 
@@ -122,11 +178,14 @@ function renderQR(targetCanvas, text, logoImage) {
   const cell = size / modules;
 
   // Background
-  targetCtx.fillStyle = '#ffffff';
-  targetCtx.fillRect(0, 0, size, size);
+  targetCtx.clearRect(0, 0, size, size);
+  if (!bgIsTransparent) {
+    targetCtx.fillStyle = bgColor;
+    targetCtx.fillRect(0, 0, size, size);
+  }
 
   // Modules
-  targetCtx.fillStyle = '#1a1814';
+  targetCtx.fillStyle = fgColor;
   for (let r = 0; r < modules; r++) {
     for (let c = 0; c < modules; c++) {
       if (qr.isDark(r, c)) {
@@ -169,11 +228,15 @@ function renderQR(targetCanvas, text, logoImage) {
   const innerEnd = moduleEnd(innerStart + innerModules);
   const innerW = innerEnd - innerX;
 
-  // 1) Fill the entire outer square white. This both creates the border AND
-  //    gives transparent regions of the logo a white backing so they don't
-  //    show QR modules through.
-  targetCtx.fillStyle = '#ffffff';
-  targetCtx.fillRect(outerX, outerY, outerW, outerW);
+  // 1) Fill the entire outer square with the background. This both creates
+  //    the border AND gives transparent regions of the logo a backing so
+  //    they don't show QR modules through.
+  if (bgIsTransparent) {
+    targetCtx.clearRect(outerX, outerY, outerW, outerW);
+  } else {
+    targetCtx.fillStyle = bgColor;
+    targetCtx.fillRect(outerX, outerY, outerW, outerW);
+  }
 
   // 2) Cover-fit the logo into the inner square (preserve aspect, crop overflow)
   const iw = logoImage.naturalWidth;
@@ -232,6 +295,92 @@ sizeBtn.addEventListener('click', async () => {
   await saveDownloadSize(downloadSize);
 });
 
+// ---------- settings panel ----------
+
+settingsToggle.addEventListener('click', () => {
+  settingsToggle.classList.toggle('is-open');
+  settingsPanel.classList.toggle('is-open');
+});
+
+function updateFgUI(color) {
+  fgColorText.value = color;
+  fgColorWheel.value = color;
+  fgColorSwatch.style.background = color;
+}
+
+function updateBgUI(color, transparent) {
+  bgColorText.value = color;
+  bgColorWheel.value = color;
+  bgTransparent.checked = transparent;
+  bgColorText.disabled = transparent;
+  bgColorBtn.disabled = transparent;
+  if (transparent) {
+    bgColorSwatch.style.background =
+      'linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%),' +
+      'linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%)';
+    bgColorSwatch.style.backgroundSize = '8px 8px';
+    bgColorSwatch.style.backgroundPosition = '0 0, 4px 4px';
+    bgColorSwatch.style.backgroundColor = '#fff';
+  } else {
+    bgColorSwatch.style.background = color;
+    bgColorSwatch.style.backgroundSize = '';
+    bgColorSwatch.style.backgroundPosition = '';
+  }
+}
+
+// Foreground
+fgColorBtn.addEventListener('click', () => fgColorWheel.click());
+
+fgColorWheel.addEventListener('input', async (e) => {
+  fgColor = e.target.value;
+  updateFgUI(fgColor);
+  scheduleDraw();
+  await saveFgColor(fgColor);
+});
+
+fgColorText.addEventListener('change', async () => {
+  let val = fgColorText.value.trim();
+  if (!val.startsWith('#')) val = '#' + val;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+    fgColor = val;
+    updateFgUI(fgColor);
+    scheduleDraw();
+    await saveFgColor(fgColor);
+  } else {
+    fgColorText.value = fgColor;
+  }
+});
+
+// Background
+bgColorBtn.addEventListener('click', () => { if (!bgIsTransparent) bgColorWheel.click(); });
+
+bgColorWheel.addEventListener('input', async (e) => {
+  bgColor = e.target.value;
+  updateBgUI(bgColor, false);
+  scheduleDraw();
+  await saveBgColor(bgColor);
+});
+
+bgColorText.addEventListener('change', async () => {
+  let val = bgColorText.value.trim();
+  if (!val.startsWith('#')) val = '#' + val;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+    bgColor = val;
+    updateBgUI(bgColor, false);
+    scheduleDraw();
+    await saveBgColor(bgColor);
+  } else {
+    bgColorText.value = bgColor;
+  }
+});
+
+bgTransparent.addEventListener('change', async () => {
+  bgIsTransparent = bgTransparent.checked;
+  updateBgUI(bgColor, bgIsTransparent);
+  scheduleDraw();
+  await saveBgTransparent(bgIsTransparent);
+});
+
 downloadBtn.addEventListener('click', async () => {
   if (!currentUrl) return;
 
@@ -256,10 +405,13 @@ downloadBtn.addEventListener('click', async () => {
 // ---------- init ----------
 
 (async function init() {
-  const [activeUrl, savedLogoKey, savedSize] = await Promise.all([
+  const [activeUrl, savedLogoKey, savedSize, savedFg, savedBg, savedBgTransp] = await Promise.all([
     getActiveTabUrl(),
     loadSavedLogoKey(),
     loadSavedDownloadSize(),
+    loadSavedFgColor(),
+    loadSavedBgColor(),
+    loadSavedBgTransparent(),
   ]);
 
   currentUrl = activeUrl || '';
@@ -270,6 +422,12 @@ downloadBtn.addEventListener('click', async () => {
 
   downloadSize = savedSize;
   updateSizeLabel();
+
+  fgColor = savedFg;
+  bgColor = savedBg;
+  bgIsTransparent = savedBgTransp;
+  updateFgUI(fgColor);
+  updateBgUI(bgColor, bgIsTransparent);
 
   await drawPreview();
 })();

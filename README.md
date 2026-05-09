@@ -86,6 +86,9 @@ Here's what each piece does:
 - **Download size** — click to cycle through 512 → 1024 → 2048 → 4096 pixels. The bigger the size, the sharper the QR if you're printing it.
 - **Logo picker** — *None*, *Logo 1* (full M&I lockup), or *Logo 2* (circular badge). Your choice is remembered the next time you open the popup.
 - **Download** — saves the QR as a PNG to your Downloads folder, named after the website (for example `qr-google.com-1024.png`).
+- **Settings** — extra settings to personalize the QR experience for specific presentations.
+    - **Foreground** — colour of the black squares.
+    - **Background** — colour of the white background, transparent also available.
 
 That's the whole thing. Scan the resulting QR code with your phone camera to test.
 
